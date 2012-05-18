@@ -6,15 +6,15 @@ I have forked it, add the package.json, and made sure it still worked in browser
 
 ### Usage:
 
-> textiled.parse(inputString [, options]);
+	textiled.parse(inputString [, options]);
 
 As for options, this is the only usage of options I could find:
 
 ### Options:
 
-> {
->	nowrapPlainBlocks: true; // Not exactly sure what it does, but its the only option.
-> }
+	{
+		nowrapPlainBlocks: true; // Not exactly sure what it does, but its the only option.
+	}
 
 
 Original Readme by Christian P.:

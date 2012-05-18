@@ -17,6 +17,6 @@ As for options, this is the only usage of options I could find:
 	}
 
 
-Original Readme by Christian P.:
+Original Readme by Christian Perfect:
 
-A better javascript textile converter, because I couldn't find one.
+	A better javascript textile converter, because I couldn't find one.

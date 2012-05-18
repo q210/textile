@@ -1,14 +1,24 @@
 {
-  "name": "textiled",
-  "version": "0.1",
-  "author": {
-    "name": "Christian Perfect, Yulian Kuncheff"
-  },
-  "main": "./textile",
-  "engines": [
-    "node"
-  ],
-  "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {},
+    "name": "textiled",
+    "version": "0.1.0",
+    "description": "A textile parser.",
+    "author": {
+        "name": "Christian Perfect",
+        "email": "christianperfect@gmail.com"
+    },
+    "contributors": {
+        "name": "Yulian Kuncheff",
+        "email": "yulian@kuncheff.com"
+    },
+    "keywords": [
+        "textile"
+    ],
+    "main": "./textiled",
+    "engines": {
+        "node": ">=0.6"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http: //github.com/Daegalus/textiled.git"
+    }
 }

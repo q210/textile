@@ -1,0 +1,14 @@
+{
+  "name": "textiled",
+  "version": "0.1",
+  "author": {
+    "name": "Christian Perfect, Yulian Kuncheff"
+  },
+  "main": "./textile",
+  "engines": [
+    "node"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+}

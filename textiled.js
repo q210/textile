@@ -1,6 +1,6 @@
-var textile;
+var textiled;
 (function() {
-	textile = function(src,options) {
+	textiled = function(src,options) {
 		var tc = new TextileConverter(src,options);
 		return tc.convert();
 	};
@@ -253,7 +253,7 @@ var textile;
 	//array containing all the phrase modifiers
 	//Contains functions which each replace a particular phrase modifier with the appropriate HTML
 	//Functions are called with respect to the TextileConvertor object, so can use things like this.makeTag
-	var phraseTypes = textile.phraseTypes = [];
+	var phraseTypes = textiled.phraseTypes = [];
 
 	var shortPunct = '\\.,"\'?!;:';
 	function makeNormalPhraseType(start,tagName,protectContents)
@@ -487,7 +487,7 @@ var textile;
 	// the functions are applied in the context of the TextileConverter object, so read in from this.src and output to this.out
 	// the 'run' function should remove the block it converted from this.src
 	// if you're adding another block type, add it to the start of this array
-	var blockTypes = textile.blockTypes = [];
+	var blockTypes = textiled.blockTypes = [];
 
 
 	var re_anyBlock = new RegExp('^[a-zA-Z][a-zA-Z0-9]*'+re_attr.source+'?\\.+ ');
@@ -876,5 +876,5 @@ var textile;
 		}
 		return html;
 	}
-
+	exports.parse = textiled;
 })();

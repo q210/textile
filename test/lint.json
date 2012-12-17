@@ -1,7 +1,7 @@
 {
   "asi"          : true,
   "bitwise"      : true,
-  "boss"         : false,
+  "boss"         : true,
   "browser"      : true,
   "couch"        : true,
   "curly"        : false,
@@ -10,7 +10,7 @@
   "eqeqeq"       : true,
   "eqnull"       : false,
   "es5"          : true,
-  "evil"         : false,
+  "evil"         : true,
   "expr"         : false,
   "forin"        : false,
   "globalstrict" : true,

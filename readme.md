@@ -9,7 +9,7 @@
 ## Usage
 
 ```js
-textile = require('textile');
+textile = require('textilejs'); // for node, others require the file.
 textile(source, { /* options */ });
 ```
 

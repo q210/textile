@@ -1,6 +1,6 @@
 {
-  "name": "textiled",
-  "version": "1.0",
+  "name": "textile",
+  "version": "1.0.1",
   "description": "Textile Parser, converts textile documents to HTML.",
   "license": "MIT",
   "main": "./lib/textile",

@@ -1,24 +1,34 @@
 {
-    "name": "textiled",
-    "version": "0.1.0",
-    "description": "A textile parser.",
-    "author": {
-        "name": "Christian Perfect",
-        "email": "christianperfect@gmail.com"
-    },
-    "contributors": {
-        "name": "Yulian Kuncheff",
-        "email": "yulian@kuncheff.com"
-    },
-    "keywords": [
-        "textile"
-    ],
-    "main": "./textiled",
-    "engines": {
-        "node": ">=0.6"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http: //github.com/Daegalus/textiled.git"
-    }
+  "name": "textiled",
+  "version": "1.0",
+  "description": "Textile Parser, converts textile documents to HTML.",
+  "license": "MIT",
+  "main": "./textiled",
+  "bugs": {
+    "email": "nijikokun@gmail.com",
+    "url": "http://github.com/Nijikokun/textiled/issues"
+  },
+  "author": {
+    "name": "Nijiko Yonskai",
+    "email": "nijikokun@gmail.com"
+  },
+  "contributers": [
+    { "name": "Nijiko Yonskai", "email": "nijikokun@gmail.com" },
+    { "name": "Yulian Kuncheff" },
+    { "name": "Christian Perfect" }
+  ],
+  "keywords": [
+    "textile", 
+    "markup", 
+    "parser",
+    "html",
+    "converter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http: //github.com/Nijikokun/textiled.git"
+  },
+  "engines": {
+    "node": "*"
+  }
 }

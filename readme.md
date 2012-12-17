@@ -18,6 +18,9 @@ textile(source, { /* options */ });
   - `wrapBlocks` **boolean**
     - `true` _default_ wraps basic blocks in paragraph tags.
     - `false` disables wrapping blocks in paragraph tags.
+  - `highlight` **function** `function (code) { return yourHighlighter(code); }`
+    - Allows highlighting of code if you wish using your own custom highlighting script.
+    - _default_ no highlighting.
 
 ## History
 

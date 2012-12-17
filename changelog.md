@@ -1,4 +1,11 @@
- ## 1.0.1
+## 1.0.2
+
+      Minor Release
+
+  - Fix issues bubbled up by jshint
+  - Implement code highlighting option, idea taken from marked parser.
+
+## 1.0.1
 
       Minor Release
 
@@ -6,7 +13,7 @@
   - Move file to `lib/` folder
   - Update `package.json`
 
-## 1.0 
+## 1.0
 
      Initial Release
 

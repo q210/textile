@@ -1,6 +1,6 @@
 {
   "name": "textilejs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Textile Parser, converts textile documents to HTML.",
   "license": "MIT",
   "main": "./lib/textile.js",
@@ -18,8 +18,8 @@
     { "name": "Christian Perfect" }
   ],
   "keywords": [
-    "textile", 
-    "markup", 
+    "textile",
+    "markup",
     "parser",
     "html",
     "converter"

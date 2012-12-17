@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "Textile Parser, converts textile documents to HTML.",
   "license": "MIT",
-  "main": "./textiled",
+  "main": "./lib/textile",
   "bugs": {
     "email": "nijikokun@gmail.com",
     "url": "http://github.com/Nijikokun/textiled/issues"

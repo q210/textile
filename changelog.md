@@ -1,3 +1,11 @@
+ ## 1.0.1
+
+      Minor Release
+
+  - Convert examples, and filename to `textile.js`
+  - Move file to `lib/` folder
+  - Update `package.json`
+
 ## 1.0 
 
      Initial Release

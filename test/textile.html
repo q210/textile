@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+	<head>
+		<title>qUnit Test for Textile.js</title>
+		<link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+	</head>
+	<body>
+		<h1 id="qunit-header">QUnit example</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">test markup, will be hidden</div>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="qunit.js"></script>
+		<script type="text/javascript" src="../textile.js"></script>
+		<script>
+			$(document).ready(function(){
+				test("Paragraph text",function() {
+					equals( textile("A single paragraph.\n\nFollowed by another."), '<p>A single paragraph.</p>\n\n<p>Followed by another.</p>', "Each line of text should be in a <p> tag");
+					equals( textile("A paragraph\nwith a line break."),'<p>A paragraph<br />\nwith a line break.</p>','Line breaks should be transformed into HTML line breaks.');
+					equals( textile("Here's some <b>bold</b> text."), "<p>Here&#8217;s some <b>bold</b> text.</p>","Simple HTML tags may be included in a paragraph.");
+					equals( textile(" No paragraph tags here."),'No paragraph tags here.',"A line beginning with a space will be left untouched, and not wrapped in <p> tags");
+				});
+				test("Smart quotes",function() {
+					equals( textile('"Proceed!" said he to the host.'),'<p>&#8220;Proceed!&#8221; said he to the host.</p>','Double quotes are turned into the correct curly quote marks.');
+					equals( textile("'Proceed!' said he to the host."),'<p>&#8216;Proceed!&#8217; said he to the host.</p>','Single quotes are turned into the correct curly quote marks.');
+					equals( textile('"\'I swear, captain,\' replied I."'),'<p>&#8220;&#8216;I swear, captain,&#8217; replied I.&#8221;</p>','Single and double quotation marks may be nested one inside the other.');
+					equals( textile("'\"I swear, captain,\" replied I.'"),'<p>&#8216;&#8220;I swear, captain,&#8221; replied I.&#8217;</p>');
+					equals( textile("Greengrocers' apostrophe's."),'<p>Greengrocers&#8217; apostrophe&#8217;s.</p>','Single quotation marks should be turned into apostrophe glyphs.');
+				});
+				test("Other punctuation",function() {
+					equals( textile("You know the Italian proverb -- Chi ha compagno ha padrone."),'<p>You know the Italian proverb &#8212; Chi ha compagno ha padrone.</p>','Double dashes become an em-dash.');
+					equals( textile('You know the Italian proverb--Chi ha compagno ha padrone.'),'<p>You know the Italian proverb&#8212;Chi ha compagno ha padrone.</p>');
+					equals( textile('You know the Italian proverb - Chi ha compagno ha padrone.'),'<p>You know the Italian proverb &#8211; Chi ha compagno ha padrone.</p>','Single dashes should be replaced with en-dashes.');
+					equals( textile('Meanwhile...'),'<p>Meanwhile&#8230;</p>','Three dots become an ellipsis.');
+					equals( textile('1 x 2 x 3 = 6'),'<p>1 &#215; 2 &#215; 3 = 6</p>','An x is replace with a times character when used between numbers.');
+					equals( textile('1x2x3 = 6'),'<p>1&#215;2&#215;3 = 6</p>');
+					equals( textile('Registered(r) Trademark(tm) Copyright (c).'),'<p>Registered&#174; Trademark&#8482; Copyright &#169;.</p>','Trademark, registered and copyright symbols are represented by their common text equivalents.');
+				});
+				test("Acronyms and uppercase",function() {
+					equals( textile('ABC(Always Be Closing)'),'<p><acronym title="Always Be Closing"><span class="caps">ABC</span></acronym></p>','Acronyms consist of three or more uppercase characters followed immediately by words in parentheses.');
+					equals( textile('IBM or HAL'),'<p><span class="caps">IBM</span> or <span class="caps">HAL</span></p>','Uppercase words of three or more characters are enclosed with a special span element.');
+					equals( textile('<p><span class="caps">PDF</span></p>'),'<p><span class="caps">PDF</span></p>','Running caps through twice doesn\'t cause an infinite loop.');
+				});
+
+				test("Phrase modifiers",function() {
+					equals( textile('The _underlying_ cause.'),'<p>The <em>underlying</em> cause.</p>','Emphasis is added with underscores.');
+					equals( textile('The *underlying* cause.'),'<p>The <strong>underlying</strong> cause.</p>','Strong text is indicated by asterisks.');
+					equals( textile('The __underlying__ cause.'),'<p>The <i>underlying</i> cause.</p>','Double underscores should give an italics tag.');
+					equals( textile('The **underlying** cause.'),'<p>The <b>underlying</b> cause.</p>','Double asterisks should give a bold tag.');
+					equals( textile('??The Count of Monte Cristo??, by Dumas.'),'<p><cite>The Count of Monte Cristo</cite>, by Dumas.</p>','Double question marks represent a citation.');
+					equals( textile('Scratch -that-, replace with +this+.'),'<p>Scratch <del>that</del>, replace with <ins>this</ins>.</p>','Inserted and deleted text is represented by plus and minus symbols.');
+					equals( textile('log ~2~ n'),'<p>log <sub>2</sub> n</p>','Subscript and superscript text is indicated by tilde and caret characters.');
+					equals( textile('2 ^x^'),'<p>2 <sup>x</sup></p>');
+					equals( textile('The %underlying% cause.'),'<p>The <span>underlying</span> cause.</p>','Percentage marks should enclose text with a span tag.');
+					equals( textile('About the @<hr />@ tag.'),'<p>About the <code>&#60;hr /&#62;</code> tag.</p>','at symbols should surround code with a code tag and escape HTML-significant characters.');
+					equals( textile('<span>_hi_ there</span>'),'<p><span><em>hi</em> there</span></p>','Phrase modifier straight after closing a tag should still work.');
+				});
+
+				test("Links",function() {
+					equals( textile('"link text":http://example.com/'),'<p><a href="http://example.com/">link text</a></p>','Links are represented by double quotes and a colon.');
+					equals( textile('"link text":/example'),'<p><a href="/example">link text</a></p>','The host name may be omitted for local link.');
+					equals( textile('"link text(with title)":http://example.com/'),'<p><a href="http://example.com/" title="with title">link text</a></p>','A title may be placed in parentheses');
+				});
+
+				test("Images",function() {
+					equals( textile('!/img.gif!'), '<p><img src="/img.gif" /></p>','Use exclamation marks to insert an image tag.');
+					equals( textile('!http://example.com/img.gif!'),'<p><img src="http://example.com/img.gif" /></p>');
+					equals( textile('!/img.gif(alt text)!'),'<p><img src="/img.gif" title="alt text" alt="alt text" /></p>','Use parentheses to include alt text.');
+					equals( textile('!/img.gif!:http://example.com/'),'<p><a href="http://example.com/"><img src="/img.gif" /></a></p>','Images may be combined with links by using an image in place of the link text.');
+				});
+
+				test("Blocks",function() {
+					equals( textile('h1. Heading 1'), '<h1>Heading 1</h1>');
+					equals( textile('h2. Heading 2'), '<h2>Heading 2</h2>');
+					equals( textile('h3. Heading 3'), '<h3>Heading 3</h3>');
+					equals( textile('h4. Heading 4'), '<h4>Heading 4</h4>');
+					equals( textile('h5. Heading 5'), '<h5>Heading 5</h5>');
+					equals( textile('h6. Heading 6'), '<h6>Heading 6</h6>');
+					equals( textile('p. A paragraph.\nContinued.\n\nAlso a paragraph.'),'<p>A paragraph.<br />\nContinued.</p>\n\n<p>Also a paragraph.</p>','Any paragraph without a block modifier should automatically be enclosed with p tags.');
+					
+					equals( textile("bq. A quotation.\nContinued.\n\nRegular paragraph."), "<blockquote>\n<p>A quotation.<br />\nContinued.</p>\n</blockquote>\n\n<p>Regular paragraph.</p>","Should put bq part inside a blockquote tag, and a p tag");
+					equals( textile("bq.:http://example.com A cited quotation."), '<blockquote cite="http://example.com">\n<p>A cited quotation.</p>\n</blockquote>', "Should add cite attribute to blockquote");
+
+					var fn = textile('A footnote reference[1].\n\nfn1. The footnote.');
+					var re = /<p>A footnote reference<sup class="footnote"><a href="#fn[a-zA-Z0-9]+">1<\/a><\/sup>.<\/p>\n\n<p id="fn[a-zA_Z0-9]+" class="footnote"><sup>1<\/sup> The footnote.<\/p>/;
+					ok(re.test(fn),'Footnotes are represented by the fn1.,fn2.,... block modifiers '+fn);
+
+					equals( textile('bc. <script>\n// a Javascript example\nalert("Hello World");\n<\/script>'),'<pre><code>&#60;script&#62;\n// a Javascript example\nalert(&#34;Hello World&#34;);\n&#60;/script&#62;\n</code></pre>','XHTML significant characters such as < and > should be escaped within the code blocks.');
+					equals( textile('pre. Pre-formatted\ntext'),'<pre>Pre-formatted\ntext\n</pre>','Pre-formatted text.');
+					equals( textile('notextile. <script type="text/javascript">\ndocument.write("Hello World!");\n<\/script>\n<noscript>Your browser doesn\'t support Javascript<\/noscript>'),'<script type="text/javascript">\ndocument.write("Hello World!");\n<\/script>\n<noscript>Your browser doesn\'t support Javascript<\/noscript>','Raw XHTML characters should be passed through untouched.');
+				});
+
+				test("Attributes",function() {
+					equals( textile('p(myclass). My classy paragraph.'),'<p class="myclass">My classy paragraph.</p>','Classes and IDs are specified with parentheses.');
+					equals( textile('p(#myid). My ID paragraph.'),'<p id="myid">My ID paragraph.</p>');
+					equals( textile('p{color:red}. Red rum.'),'<p style="color:red;">Red rum.</p>','CSS styles are specified with braces.');
+					equals( textile('p[fr-fr]. En français.'),'<p lang="fr-fr">En français.</p>','Languages are specified with square brackets.');
+					equals( textile('A *(myclass)classy* phrase.'),'<p>A <strong class="myclass">classy</strong> phrase.</p>','The same syntax may be applied to phrase modifiers');
+					equals( textile('The %{color:blue}blue% room.'),'<p>The <span style="color:blue;">blue</span> room.</p>');
+					equals( textile('p(myclass#myid3){color:green}[de-de]. A complex paragraph.'),'<p style="color:green;" class="myclass" id="myid3" lang="de-de">A complex paragraph.</p>','Block and phrase attributes may be combined.');
+					equals( textile('A ??(myclass#myid4){color:green}[de-de]complex?? phrase.'),'<p>A <cite style="color:green;" class="myclass" id="myid4" lang="de-de">complex</cite> phrase.</p>');
+				});
+
+				test("Extended blocks",function() {
+					equals( textile('bq.. A quote.\n\nThe quote continued.\n\np. Back to paragraph text.'),'<blockquote>\n<p>A quote.</p>\n<p>The quote continued.</p>\n</blockquote>\n\n<p>Back to paragraph text.</p>','Use two dots to make a block continue until the next block modifier.');
+					equals( textile('A PHP code example.\n\nbc.. <?php\nfunction hello() {\n// display a hello message\n\nprint "Hello, World";\n}\n?>\n\np. Following paragraph.'),'<p>A <span class="caps">PHP</span> code example.</p>\n\n<pre><code>&#60;?php\nfunction hello() {\n// display a hello message\n</code>\n<code>print &#34;Hello, World&#34;;\n}\n?&#62;\n</code></pre>\n\n<p>Following paragraph.</p>','Extended blocks are useful for long examples of code.');
+					equals( textile('p(myclass).. A classy paragraph.\n\nAnother classy paragraph.\n\np. Not so classy.'),'<p class="myclass">A classy paragraph.</p>\n<p class="myclass">Another classy paragraph.</p>\n\n<p>Not so classy.</p>','Block attributes on an extended block should be included on each following block.');
+					equals( textile('bq(myclass).. Quote paragraph 1.\n\nParagraph 2.'),'<blockquote class="myclass">\n<p class="myclass">Quote paragraph 1.</p>\n<p class="myclass">Paragraph 2.</p>\n</blockquote>','Attributes on bq and bc extended blocks should be included on both the inner and outer blocks.');
+					equals( textile('bc(myclass).. Code block 1.\n\nCode block 2.'),'<pre class="myclass"><code class="myclass">Code block 1.\n</code>\n<code class="myclass">Code block 2.\n</code></pre>');
+				});
+
+				test("HTML",function() {
+					equals( textile('<b>bold</b> and <i>italic</i>, the hard way.'),'<p><b>bold</b> and <i>italic</i>, the hard way.</p>','Span tags that enclose part of a block should be left intact.');
+					equals( textile('<div class="mydiv">My div</div>'),'<div class="mydiv">My div</div>','Paragraphs that consist entirely of block tags should not be enclosed in <p> tags.');
+					equals( textile('<img src="/img.gif" />'),'<p><img src="/img.gif" /></p>','Paragraphs only partly enclosed in block tags, or only inline tags, should be enclosed in <p> tags.');
+					equals( textile('<span class="myspan">I\'ll make my own way.</span>'),'<p><span class="myspan">I&#8217;ll make my own way.</span></p>');
+					equals( textile('<div>inside</div> and outside.'),'<p><div>inside</div> and outside.</p>');
+					equals( textile(' <div>\n <span>My div</span>\n </div>'),'<div>\n <span>My div</span>\n </div>','To prevent textile from enclosing HTML blocks in para tags, use a space at the beginning of each line.');
+					equals( textile('notextile.. <div>\n\n<span>My div</span>\n\n</div>'),'<div>\n\n<span>My div</span>\n\n</div>','or use a notextile.. block');
+					equals( textile('<pre>\nA HTML <b>example</b>.\n</pre>'),'<pre>\nA HTML &#60;b&#62;example&#60;/b&#62;.\n</pre>','The contents of explicit pre and code tags are escaped for display.');
+					equals( textile('<code>\nAnother HTML <b>example</b>.\n</code>'),'<p><code>\nAnother HTML &#60;b&#62;example&#60;/b&#62;.\n</code></p>');
+					equals( textile('<notextile>\np. Leave me alone\n</notextile>'),'<p>\np. Leave me alone\n</p>');
+				});
+
+				test("Alignment",function() {
+					equals( textile('p<. Left-aligned paragraph.'),'<p style="text-align:left;">Left-aligned paragraph.</p>','Left alignment is specified with a less-than symbol.');
+					equals( textile('h3>. Right-aligned heading.'),'<h3 style="text-align:right;">Right-aligned heading.</h3>','Right alignment is specified with a greater-than symbol.');
+					equals( textile('p<>. Justified paragraph.'),'<p style="text-align:justify;">Justified paragraph.</p>','Use both symbpols for justified text.');
+					equals( textile('h3=. Centered heading.'),'<h3 style="text-align:center;">Centered heading.</h3>','An equals symbol represents centred text.');
+				});
+
+				test("Padding",function() {
+					equals( textile('p(. Left pad 1em.'),'<p style="padding-left:1em;">Left pad 1em.</p>','Use parentheses to add padding, in multiples of 1em.');
+					equals( textile('p)). Right pad 2em.'),'<p style="padding-right:2em;">Right pad 2em.</p>');
+					equals( textile('p(). Left and right pad 1em.'),'<p style="padding-left:1em;padding-right:1em;">Left and right pad 1em.</p>');
+				});
+
+				test("Lists",function() {
+					equals( textile('# Item one\n# Item two\n# Item three'),'<ol>\n<li>Item one</li>\n<li>Item two</li>\n<li>Item three</li>\n</ol>','Numeric lists are represented by lines beginning with #');
+					equals( textile('* Item A\n* Item B\n* Item C'),'<ul>\n<li>Item A</li>\n<li>Item B</li>\n<li>Item C</li>\n</ul>','Bulleted lists are represented by lines beginning with *');
+					equals( textile('*{color:red} Item one\n* Item two\n* Item three'),'<ul style="color:red;">\n<li>Item one</li>\n<li>Item two</li>\n<li>Item three</li>\n</ul>','Attributes applied to the first item should apply to the list itself.');
+					equals( textile('# Item one\n## Item one-A\n## Item one-B\n### Item one-B-a\n# Item two'),'<ol>\n<li>Item one\n<ol>\n<li>Item one-A</li>\n<li>Item one-B\n<ol>\n<li>Item one-B-a</li>\n</ol></li>\n</ol></li>\n<li>Item two</li>\n</ol>','Use multiple # or * symbols to create nested lists');
+				});
+
+				test("Tables",function() {
+					equals( textile('|a|simple|table|'),'<table>\n<tr>\n<td>a</td>\n<td>simple</td>\n<td>table</td>\n</tr>\n</table>','Pipe symbols separate cells.');
+					equals( textile('|_. a|_. table|_. heading|\n|a|table|row|'),'<table>\n<tr>\n<th>a</th>\n<th>table</th>\n<th>heading</th>\n</tr>\n<tr>\n<td>a</td>\n<td>table</td>\n<td>row</td>\n</tr>\n</table>','_. indicates table heading cells');
+					equals( textile('|a|{color:red}. styled|cell|'),'<table>\n<tr>\n<td>a</td>\n<td style="color:red;">styled</td>\n<td>cell</td>\n</tr>\n</table>','Cell attributes are placed within each cell.');
+					equals( textile('(rowclass). |a|classy|row|'),'<table>\n<tr class="rowclass">\n<td>a</td>\n<td>classy</td>\n<td>row</td>\n</tr>\n</table>','Row attributes are placed at the beginning of a row');
+					equals( textile('table(tableclass).\n|a|classy|table|\n|a|classy|table|'),'<table class="tableclass">\n<tr>\n<td>a</td>\n<td>classy</td>\n<td>table</td>\n</tr>\n<tr>\n<td>a</td>\n<td>classy</td>\n<td>table</td>\n</tr>\n</table>','Table attributes are specified by using the table. block modifier');
+					equals( textile('|^. top alignment|'),'<table>\n<tr>\n<td style="vertical-align:top;">top alignment</td>\n</tr>\n</table>','Vertically aligned cell');
+					equals( textile('|-. middle alignment|'),'<table>\n<tr>\n<td style="vertical-align:middle;">middle alignment</td>\n</tr>\n</table>','Middle aligned cell');
+					equals( textile('|~. bottom alignment|'),'<table>\n<tr>\n<td style="vertical-align:bottom;">bottom alignment</td>\n</tr>\n</table>','Bottom aligned cell');
+					equals( textile('|\\2. spans two cols |\n| col 1 | col 2 |'),'<table>\n<tr>\n<td colspan="2">spans two cols </td>\n</tr>\n<tr>\n<td> col 1 </td>\n<td> col 2 </td>\n</tr>\n</table>','A backslash indicates column span.');
+					equals( textile('|/3. spans 3 rows | row a |\n| row b |\n| row c |'),'<table>\n<tr>\n<td rowspan="3">spans 3 rows </td>\n<td> row a </td>\n</tr>\n<tr>\n<td> row b </td>\n</tr>\n<tr>\n<td> row c </td>\n</tr>\n</table>','A forward slash indicates row span.');
+				});
+
+				test("Miscellaneous",function() {
+					equals( textile('this*won\'t*work'),'<p>this*won&#8217;t*work</p>','Modifiers normally require surrounding whitespace.');
+					equals( textile('this[*will*]work'),'<p>this<strong>will</strong>work</p>','To use modifiers without whitespace, surround width square brackets.');
+					equals( textile('1[^st^}, 2[^nd^], 3[^rd^].'),'<p>1<sup>st</sup>, 2<sup>nd</sup>, 3<sup>rd</sup>.</p>','This is particularly useful with superscript and subscript.');
+					equals( textile('2 log[~n~]'),'<p>2 log<sub>n</sub></p>');
+					equals( textile('A close[!/img.gif!]image.\nA tight["text":http://example.com/]link.'),'<p>A close<img src="/img.gif" />image.<br />\nA tight<a href="http://example.com/">text</a>link.</p>','It can also be used on links and images.');
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -6,7 +6,7 @@
 
 ```js
 textile = require('textile');
-textile(source, { /* options *\/ });
+textile(source, { /* options */ });
 ```
 
 ## Options

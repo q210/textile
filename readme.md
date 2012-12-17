@@ -2,6 +2,10 @@
 
   Converts textile documents to HTML.
 
+## Install
+
+    $ npm install textilejs
+
 ## Usage
 
 ```js
